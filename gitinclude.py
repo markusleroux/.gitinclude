@@ -8,30 +8,15 @@ import sys
 import os
 from collections import OrderedDict
 
-
-def order_path_dict(path_dict):
-    '''Return an ordered dictionary with all the subpaths from path_dict
-
-    Arguments
-    ---------
-    path_dict : {relative_path: [*.py, *.cpp, ...]}
-
-    Returns
-    -------
-    A list of strings describing the gitignore.
-    '''
-    ordered_dict = OrderedDict()
-    for relative_path, extensions in path_dict.items():
-        for i in (i for i, l in enumerate(relative_path[:-1])
-                  if l == os.path.sep):
-            subpath = relative_path[:i + 1]
-            if subpath not in ordered_dict:
-                ordered_dict[subpath] = None
-
-        ordered_dict[relative_path] = extensions
-
-    return ordered_dict
-
+Docstring = ["#---------------------------------------------------------#",
+             "# **********************.gitinclude********************** #",
+             "#---------------------------------------------------------#",
+             "# This gitignore files was generated using the gitinclude #",
+             "# command line application from a set of rules regarding  #",
+             "# which files should be kept.                             #",
+             "#                                                         #",
+             "#      https://github.com/markusleroux/.gitinclude.git    #",
+             "#---------------------------------------------------------#\n"]
 
 def generate(ordered_path_dict):
     '''Return a list of gitignore lines as specified by the ordered dictionary.
@@ -44,8 +29,12 @@ def generate(ordered_path_dict):
     -------
     A list of .gitignore lines
     '''
-    result = ["*"]
+    result = Docstring
+    result.append("\n\n# Ignore all:\n# ---------------------------\n*")
+
     for path, extensions in ordered_path_dict.items():
+        result.append("\n\n# Directory: {} \n# Rules: {}".format(path, extensions))
+        result.append("# ---------------------------")
         if path != "/":
             result.append("!" + path)
             result.append(path + "*")
@@ -57,16 +46,22 @@ def generate(ordered_path_dict):
 
 
 def parse_file(filename):
-    '''Parse a gitinclude file and return a dictionary.'''
-    path_dict = dict()
+    '''Parse a gitinclude file and return an ordered dictionary.'''
+    ordered_dict = OrderedDict()
     with open(filename, 'r') as gitinclude_file:
         for line in filter(None, (''.join(line.split())
                                   for line in gitinclude_file)):
             target_dir, extensions = line.rsplit("[", 1)
             extensions = extensions[:-1].split(',')
-            path_dict[target_dir] = extensions
 
-    return path_dict
+            for i in (i for i, l in enumerate(target_dir[:-1]) if l == os.path.sep):
+                subpath = target_dir[:i+1]
+                if subpath not in ordered_dict:
+                    ordered_dict[subpath] = None
+
+            ordered_dict[target_dir] = extensions
+
+    return ordered_dict
 
 
 def write_to_gitignore(rules, target=".gitignore"):
@@ -77,8 +72,9 @@ def write_to_gitignore(rules, target=".gitignore"):
 
 def gitinclude(filename, target=".gitignore"):
     '''Generate rules from gitinclude file.'''
-    rules = generate(order_path_dict(parse_file(filename)))
+    rules = generate(parse_file(filename))
     write_to_gitignore(rules, target)
+    print("{} written".format(target))
 
 
 if __name__ == '__main__':
