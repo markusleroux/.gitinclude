@@ -1,0 +1,47 @@
+#---------------------------------------------------------#
+# **********************.gitinclude********************** #
+#---------------------------------------------------------#
+# This gitignore files was generated using the gitinclude #
+# command line application from a set of rules regarding  #
+# which files should be kept.                             #
+#                                                         #
+#      https://github.com/markusleroux/.gitinclude.git    #
+#---------------------------------------------------------#
+
+
+
+# Ignore all:
+# ---------------------------
+*
+
+
+# Directory: / 
+# Rules: ['*.cpp', '*.py']
+# ---------------------------
+!/*.cpp
+!/*.py
+
+
+# Directory: /test/ 
+# Rules: ['test_file.txt', '*.cxx']
+# ---------------------------
+!/test/
+/test/*
+!/test/test_file.txt
+!/test/*.cxx
+
+
+# Directory: /test/test1/ 
+# Rules: None
+# ---------------------------
+!/test/test1/
+/test/test1/*
+
+
+# Directory: /test/test1/test2/ 
+# Rules: ['*.txt', '*.cpp']
+# ---------------------------
+!/test/test1/test2/
+/test/test1/test2/*
+!/test/test1/test2/*.txt
+!/test/test1/test2/*.cpp

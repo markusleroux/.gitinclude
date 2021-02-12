@@ -1,0 +1,9 @@
+
+# Include all .txt and .cpp files in /test/test1/test2/ directory
+/test/test1/test2/[*.txt, *.cpp]
+
+# Include the test_file.txt file and all .cxx files in /test/ directory
+/test/[test_file.txt, *.cxx]
+
+# Include all .cpp and .py files in root (relative to script, see .gitignore)
+/[*.cpp, *.py]

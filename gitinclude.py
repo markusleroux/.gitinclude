@@ -1,7 +1,23 @@
 #!/usr/bin/env python
 '''
 A command line application for constructing a .gitignore file
-from a collection of directory, [file/filteype] pairs.
+from a file listing directory, [file/filteype] pairs.
+
+
+Sample file structure:
+---------------------
+.gitinclude
+---------------------
+# Include all .txt and .cpp files in /test/test1/test2/ directory
+/test/test1/test2/[*.txt, *.cpp]
+
+# Include the test_file.txt file and all .cxx files in /test/ directory
+/test/[test_file.txt, *.cxx]
+
+# Include all .cpp and .py files in root (relative to script, see .gitignore)
+/[*.cpp, *.py]
+---------------------
+
 '''
 
 import sys
@@ -46,7 +62,12 @@ def generate(ordered_path_dict):
 
 
 def parse_file(filename):
-    '''Parse a gitinclude file and return an ordered dictionary.'''
+    '''Parse a gitinclude file and return an ordered dictionary.
+
+    Returns
+    -------
+    ordered_dict : {directory: [filetypes]}
+    '''
     ordered_dict = OrderedDict()
     with open(filename, 'r') as gitinclude_file:
         for line in filter(None, (''.join(line.split())
@@ -78,6 +99,9 @@ def gitinclude(filename, target=".gitignore"):
 
 
 if __name__ == '__main__':
+    if not sys.version_info[0] == 3:
+        print("Please use Python 3")
+
     if len(sys.argv) == 1:
         print("Please specify a gitinclude file")
     elif len(sys.argv) == 2:
